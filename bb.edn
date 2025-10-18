@@ -42,16 +42,16 @@
 
   main {:doc "Run the main command line inteface"
         :task (do
-                (apply clojure (into ["-M:main"] *command-line-args*)))}
+                (apply clojure (into ["-M:jvm-base:main"] *command-line-args*)))}
 
   compile {:doc "Compile Main Clojure namespace"
-           :task (clojure "-M -e \"(compile 'maktaba.main)\"")}
+           :task (clojure "-M -e \"(compile 'dm.main)\"")}
 
   build-uberjar {:doc "Build UberJar Jar"
-                 :task (clojure "-M:jvm-base:uberdeps --main-class maktaba.main")}
+                 :task (clojure "-M:jvm-base:uberdeps --main-class dm.main")}
 
   build-gvm {:doc "Build GraalVM native image"
-             :task (shell "native-image --no-fallback --initialize-at-build-time -jar target/maktaba.jar")}
+             :task (shell "native-image --no-fallback --initialize-at-build-time -jar target/dm.jar")}
 
   build-cli {:doc "Rebuild Command Line Tool"
              :task (do (run 'clean)
@@ -87,6 +87,6 @@
   ci
   {:doc "Runs linting and tests for the CI"
    :task (do (run 'clean)
-             #_(run 'fmt-check)
-             #_(run 'lint)
+             (run 'fmt-check)
+             (run 'lint)
              (run 'test))}}}
