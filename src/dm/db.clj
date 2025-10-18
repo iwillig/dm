@@ -1,8 +1,7 @@
 (ns dm.db)
 
 (def schema
-  {
-   :attribute/name  {:db/valueType :db.type/keyword}
+  {:attribute/name  {:db/valueType :db.type/keyword}
    :attribute/value {:db/valueType :db.type/long}
 
    :character/name        {:db/valueType :db.type/string}
@@ -18,9 +17,7 @@
    :character/race {:db/valueType :db.type/ref}
 
    :character/attributes {:db/valueType   :db.type/ref
-                          :db/cardinality :db.cardinality/many}
-
-   })
+                          :db/cardinality :db.cardinality/many}})
 
 
 (comment
