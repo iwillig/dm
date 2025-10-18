@@ -1,0 +1,12 @@
+* DM
+
+Your personal DM assistant and knowledge base that helps you run RPG
+campaigns.
+
+** Install
+
+#+BEGIN_SRC bash
+brew install dm-assistant
+#+END_SRC
+
+** Development Install
