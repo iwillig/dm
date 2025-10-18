@@ -42,18 +42,19 @@
     (map->HTTPKit {:port 7001 :timeout 100})
     {:database :database})))
 
+
 (def config-cli
   {:command     "dm-assistant"
    :description ""
    :version     "0.0.1"
    :subcommands [{:command "roll"
                   :description "Rolls a N dice"
-                  :runs (fn [& _args]
-                          (println (dm.roll/roll 20)))}]})
+                  :runs (fn [{[dn] :_arguments}]
+                          (println dn)
+                          (println (dm.roll/roll (parse-long dn))))}]})
 
 (comment
-  (component/start (new-system nil))
-  )
+  (component/start (new-system nil)))
 
 (defn -main [& args]
   (cli/run-cmd args config-cli))
