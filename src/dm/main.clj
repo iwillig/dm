@@ -1,6 +1,7 @@
 (ns dm.main
   (:gen-class)
   (:require
+   [bling.core :as bling]
    [com.stuartsierra.component :as component]
    [datalevin.core :as d]
    [cli-matic.core :as cli]
@@ -43,6 +44,16 @@
     {:database :database})))
 
 
+(defn callout
+  [messages]
+  (bling/callout
+   {:type :info
+    :label ""
+    :theme :gutter}
+   (with-out-str
+
+     (apply bling/print-bling messages))))
+
 (def config-cli
   {:command     "dm-assistant"
    :description ""
@@ -50,8 +61,14 @@
    :subcommands [{:command "roll"
                   :description "Rolls a N dice"
                   :runs (fn [{[dn] :_arguments}]
-                          (println dn)
-                          (println (dm.roll/roll (parse-long dn))))}]})
+
+                          (callout [[:bold "Rolling "]
+                                    [:double-underline (str "d" dn)]])
+                          (callout [[:bold "Result "]
+                                    [:double-underline
+                                     (dm.roll/roll (parse-long dn))]])
+
+                          0)}]})
 
 (comment
   (component/start (new-system nil)))
