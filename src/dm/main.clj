@@ -3,7 +3,9 @@
   (:require
    [com.stuartsierra.component :as component]
    [datalevin.core :as d]
+   [cli-matic.core :as cli]
    [dm.db :as dm.db]
+   [dm.roll :as dm.roll]
    [org.httpkit.server :as http-kit]))
 
 (defn app
@@ -40,5 +42,18 @@
     (map->HTTPKit {:port 7001 :timeout 100})
     {:database :database})))
 
-(defn -main [& _args]
-  (component/start (new-system nil)))
+(def config-cli
+  {:command     "dm-assistant"
+   :description ""
+   :version     "0.0.1"
+   :subcommands [{:command "roll"
+                  :description "Rolls a N dice"
+                  :runs (fn [& _args]
+                          (println (dm.roll/roll 20)))}]})
+
+(comment
+  (component/start (new-system nil))
+  )
+
+(defn -main [& args]
+  (cli/run-cmd args config-cli))
