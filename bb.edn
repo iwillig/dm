@@ -51,7 +51,12 @@
                  :task (clojure "-M:jvm-base:uberdeps --main-class dm.main")}
 
   build-gvm {:doc "Build GraalVM native image"
-             :task (shell "native-image --no-fallback --initialize-at-build-time -jar target/dm.jar")}
+             :task (apply shell ["native-image"
+                                 "--no-fallback"
+                                 "--enable-native-access=ALL-UNNAMED"
+                                 " --initialize-at-build-time"
+                                 "-jar"
+                                 "target/dm.jar"])}
 
   build-cli {:doc "Rebuild Command Line Tool"
              :task (do (run 'clean)
