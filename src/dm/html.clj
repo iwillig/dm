@@ -17,7 +17,7 @@
             :rel "stylesheet"}]
     [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"}]]
    [:body
-    [:main content]]])
+    [:main.container content]]])
 
 
 (defn index-page
@@ -25,10 +25,11 @@
   (str
    (h/html
        (base-page
-        [:div [:h1 "dm"]
+        [:div
+         [:h1 "dm"]
          [:ul
           [:li [:p "system"]]
           [:li [:p "db"]
-           [:code (pr-str db)]]
+           [:code (pr-str (dm.db/get-db db))]]
           [:li [:p "ctx"]
            [:code (pr-str ctx)]]]]))))
