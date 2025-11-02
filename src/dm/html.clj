@@ -1,5 +1,6 @@
 (ns dm.html
   (:require
+   [dm.db :as dm.db]
    [hiccup2.core :as h]))
 
 (defn base-page
@@ -17,6 +18,7 @@
     [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"}]]
    [:body
     [:main content]]])
+
 
 (defn index-page
   [db ctx]

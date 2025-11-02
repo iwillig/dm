@@ -1,43 +1,20 @@
 (ns dm.main
   (:gen-class)
   (:require
+   [dm.components :as dm.components]
    [bling.core :as bling]
    [com.stuartsierra.component :as component]
-   [datalevin.core :as d]
    [cli-matic.core :as cli]
-   [dm.db :as dm.db]
-   [dm.roll :as dm.roll]
-   [dm.routes :as dm.routes]
-   [org.httpkit.server :as http-kit]))
-
-(defrecord Database [db-path]
-  component/Lifecycle
-  (start [self]
-    (assoc self :conn (d/get-conn db-path dm.db/schema)))
-  (stop  [self]
-    (when-let [conn (:conn self)]
-      (d/close conn))))
-
-
-(defrecord HTTPKit [port timeout database]
-  component/Lifecycle
-  (start [self]
-    (assoc self :server (http-kit/run-server
-                         (dm.routes/handler database)
-                         {:port port})))
-  (stop  [self]
-    (when-let [server (:server self)]
-      (server :timeout timeout))))
-
+   [dm.roll :as dm.roll]))
 
 (defn new-system
   [_]
   (component/system-map
    :database
-   (map->Database {:db-path "db"})
+   (dm.components/map->Database {:db-path "db"})
    :http-server
    (component/using
-    (map->HTTPKit {:port 7001 :timeout 100})
+    (dm.components/map->HTTPKit {:port 7001 :timeout 100})
     {:database :database})))
 
 

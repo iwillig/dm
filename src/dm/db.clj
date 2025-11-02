@@ -1,5 +1,10 @@
 (ns dm.db)
 
+(defprotocol IDB
+  (get-db [self])
+  (get-conn [self]))
+
+
 (def species
   #{:species/elf
     :species/tiefling
