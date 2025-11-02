@@ -1,9 +1,18 @@
-(ns dm.db)
+(ns dm.db
+  (:import
+   (java.util.concurrent.atomic AtomicLong)))
+
+(set! *warn-on-reflection* true)
+
+(defonce ^:private temp-id
+  (AtomicLong. 0))
+
+(defn- next-temp-id []
+  (.decrementAndGet ^AtomicLong temp-id))
 
 (defprotocol IDB
   (get-db [self])
   (get-conn [self]))
-
 
 (def species
   #{:species/elf

@@ -4,4 +4,4 @@
 
 (t/deftest test-okay
   (t/testing "changes to the api"
-    (t/is (= nil #{}))))
+    (t/is (match? nil #{}))))
