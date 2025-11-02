@@ -30,15 +30,15 @@
   {:attribute/name  {:db/valueType :db.type/keyword}
    :attribute/value {:db/valueType :db.type/long}
 
-   :item/name {:db/valueType :db.type/keyword}
-   :item/number {:db/valueType :db.type/log}
+   :item/name   {:db/valueType :db.type/keyword}
+   :item/number {:db/valueType :db.type/long}
 
    :character/name        {:db/valueType :db.type/string}
    :character/armor-class {:db/valueType :db.type/long}
    :character/inspriation {:db/valueType :db.type/boolean}
 
-   :character/skill       {:db/valueType   :db.type/ref
-                           :db/cardinality :db.cardinality/many}
+   :character/skill {:db/valueType   :db.type/ref
+                     :db/cardinality :db.cardinality/many}
 
    :character/class   {:db/valueType :db.type/ref}
    :character/species {:db/valueType :db.type/ref}

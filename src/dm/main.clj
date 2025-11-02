@@ -7,12 +7,8 @@
    [cli-matic.core :as cli]
    [dm.db :as dm.db]
    [dm.roll :as dm.roll]
+   [dm.routes :as dm.routes]
    [org.httpkit.server :as http-kit]))
-
-(defn app
-  [_req]
-  {:body "hello"
-   :status 200})
 
 (defrecord Database [db-path]
   component/Lifecycle
@@ -26,8 +22,7 @@
 (defrecord HTTPKit [port timeout database]
   component/Lifecycle
   (start [self]
-    (println database)
-    (assoc self :server (http-kit/run-server app {:port port})))
+    (assoc self :server (http-kit/run-server (dm.routes/handler database) {:port port})))
   (stop  [self]
     (when-let [server (:server self)]
       (server :timeout timeout))))
