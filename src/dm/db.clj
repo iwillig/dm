@@ -7,7 +7,7 @@
 (defonce ^:private temp-id
   (AtomicLong. 0))
 
-(defn- next-temp-id []
+(defn next-temp-id []
   (.decrementAndGet ^AtomicLong temp-id))
 
 (defprotocol IDB
