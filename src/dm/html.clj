@@ -13,7 +13,8 @@
     [:meta {:name "color-scheme" :content "light dark"}]
     [:link {:type "text/css"
             :href "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
-            :rel "stylesheet"}]]
+            :rel "stylesheet"}]
+    [:script {:src "https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"}]]
    [:body
     [:main content]]])
 
