@@ -2,11 +2,8 @@
   (:require
    [dm.html :as dm.html]
    [reitit.core :as r]
-   [ataraxy.core :as ataraxy]
+   [reitit.ring :as reitit.ring]
    [liberator.core :as liberator]))
-
-(def routes
-  '{"/" [:index]})
 
 (defn index
   [db]
@@ -14,15 +11,19 @@
    :available-media-types ["text/html"]
    :handle-ok (partial dm.html/index-page db)))
 
-(defn handler
+(defn router
   [db]
-  (ataraxy/handler
-   {:routes   routes
-    :handlers {:index (index db)}}))
-
+  (reitit.ring/router
+   [["/" {:name ::index
+          :handler (index db)}]]))
 
 (comment
+  (r/match-by-name (router nil) ::index)
+  (r/match-by-path (router nil) "/"))
 
-  (ataraxy/matches routes {:uri "/"})
 
-  )
+
+(defn handler
+  [db]
+  (reitit.ring/ring-handler
+   (router db)))

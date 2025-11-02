@@ -22,7 +22,9 @@
 (defrecord HTTPKit [port timeout database]
   component/Lifecycle
   (start [self]
-    (assoc self :server (http-kit/run-server (dm.routes/handler database) {:port port})))
+    (assoc self :server (http-kit/run-server
+                         (dm.routes/handler database)
+                         {:port port})))
   (stop  [self]
     (when-let [server (:server self)]
       (server :timeout timeout))))

@@ -28,12 +28,11 @@
 
 
 (comment
+  (lint)
   (refresh)
   (all-tests)
   (k/run-all)
   (reset)
   (stop)
   (start)
-  (system)
-
-  )
+  (system))

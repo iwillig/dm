@@ -1,6 +1,5 @@
 (ns dm.html
   (:require
-   [clojure.pprint :as pp]
    [hiccup2.core :as h]))
 
 (defn base-page
