@@ -2,18 +2,91 @@
 
 **PURPOSE**: This guide ensures LLM agents use the correct tools for Clojure development and follow best practices.
 
+**IMPORTANT**: Do NOT use emojis in any output, responses, or documentation. Use plain text markers like [CORRECT], [WRONG], [NOTE], etc. instead.
+
 ---
 
-## 🎯 CRITICAL RULES - ALWAYS FOLLOW THESE
+## Project Libraries Overview
+
+This project uses the following major libraries. Understanding their purpose helps with development:
+
+### Web & Server
+- **http-kit** (2.8.1) - High-performance HTTP server and client
+- **reitit** (0.9.2) - Fast, data-driven routing library
+- **liberator** (0.15.3) - Library for building RESTful APIs using resource-oriented architecture
+- **hiccup** (2.0.0) - HTML generation using Clojure data structures
+
+### Database & Queries
+- **next.jdbc** (1.3.955) - Modern, low-level JDBC wrapper for database access
+- **honeysql** (2.7.1350) - DSL for building SQL queries as Clojure data structures
+- **ragtime** (0.9.4) - Database migration library
+- **sqlite-jdbc** (3.47.1.0) - SQLite JDBC driver
+
+### Data Validation & Schema
+- **malli** (0.19.2) - Data-driven schema library for validation, transformation, and generation
+
+### Component Lifecycle
+- **component** (1.1.0) - Framework for managing lifecycle and dependencies of stateful objects
+
+### Testing (Dev/Test)
+- **kaocha** (1.91.1392) - Full-featured test runner with plugin system
+- **matcher-combinators** (3.9.1) - Library for matching nested data structures in tests
+- **test.check** (1.1.1) - Property-based testing (generative testing)
+
+### Development Tools (Dev)
+- **clj-reload** (0.9.8) - Code reloading for REPL-driven development
+- **component.repl** (0.2.0) - REPL utilities for component lifecycle management
+- **clj-kondo** (2022.09.08) - Clojure linter for code quality
+
+### Logging
+- **cambium** (1.1.1) - Structured logging library built on SLF4J/Logback
+
+### Key Patterns Used
+
+**Database Pattern**: Use `honeysql` to build queries as data, then execute with `next.jdbc`:
+```clojure
+(require '[honey.sql :as sql])
+(require '[next.jdbc :as jdbc])
+
+(jdbc/execute! db (sql/format {:select [:*] :from [:users] :where [:= :id 1]}))
+```
+
+**Component Pattern**: System components start/stop in dependency order:
+```clojure
+(require '[com.stuartsierra.component :as component])
+
+(def system (component/system-map
+              :database (map->Database {...})
+              :http-server (component/using (map->HTTPServer {...}) {:database :database})))
+```
+
+**Malli Validation**: Define schemas, then validate at boundaries:
+```clojure
+(require '[malli.core :as m])
+
+(def UserSchema [:map [:id :int] [:name :string]])
+(m/assert UserSchema {:id 1 :name "Alice"})
+```
+
+**Kaocha Testing**: Run tests from REPL or CLI:
+```clojure
+(require '[kaocha.repl :as k])
+(k/run-all)                    ; Run all tests
+(k/run 'my.namespace-test)     ; Run specific namespace
+```
+
+---
+
+## CRITICAL RULES - ALWAYS FOLLOW THESE
 
 ### Rule 1: NEVER use `file_write` or `file_edit` for Clojure files (.clj, .cljs, .cljc, .bb)
-❌ **WRONG:**
+[WRONG]
 ```
 file_write(file_path: "src/myapp/core.clj", content: "...")
 file_edit(file_path: "src/myapp/core.clj", old_string: "...", new_string: "...")
 ```
 
-✅ **RIGHT:**
+[CORRECT]
 ```
 clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier: "my-func", operation: "replace", content: "...")
 ```
@@ -23,21 +96,21 @@ clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier
 ---
 
 ### Rule 2: ALWAYS validate code in REPL BEFORE saving to file
-❌ **WRONG:**
+[WRONG]
 ```
 clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier: "my-func", operation: "replace", content: "(defn my-func [x] (+ x 1))")
 ; Hope it works!
 ```
 
-✅ **RIGHT:**
+[CORRECT]
 ```
 ; Step 1: Test in REPL first
 clojure_eval(code: """
 (require '[myapp.core :reload])
 (in-ns 'myapp.core)
 (defn my-func [x] (+ x 1))
-(my-func 5)    ; => 6 ✓
-(my-func -1)   ; => 0 ✓
+(my-func 5)    ; => 6 [PASS]
+(my-func -1)   ; => 0 [PASS]
 """)
 
 ; Step 2: Save to file after validation
@@ -46,7 +119,7 @@ clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier
 ; Step 3: Verify the saved code reloads correctly
 clojure_eval(code: """
 (require '[myapp.core :reload])
-(my-func 5)    ; => 6 ✓
+(my-func 5)    ; => 6 [PASS]
 """)
 ```
 
@@ -55,7 +128,7 @@ clojure_eval(code: """
 ---
 
 ### Rule 3: ALWAYS use `clojure_edit` with correct form_type and form_identifier
-✅ **CORRECT PATTERNS:**
+[CORRECT PATTERNS]
 
 **For functions:**
 ```
@@ -110,12 +183,12 @@ clojure_edit(
 ---
 
 ### Rule 4: Use operation "insert_before" or "insert_after" to add new code, NOT replace
-❌ **WRONG** - Replacing entire file:
+[WRONG] - Replacing entire file:
 ```
 clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier: "existing-func", operation: "replace", content: "entire file content")
 ```
 
-✅ **RIGHT** - Inserting after existing function:
+[CORRECT] - Inserting after existing function:
 ```
 clojure_edit(
   file_path: "src/myapp/core.clj",
@@ -130,7 +203,7 @@ clojure_edit(
 ---
 
 ### Rule 5: Use `clojure_edit_replace_sexp` for changing expressions WITHIN functions
-✅ **CORRECT:**
+[CORRECT]
 ```
 ; Rename a symbol throughout
 clojure_edit_replace_sexp(
@@ -156,7 +229,7 @@ clojure_edit_replace_sexp(
 
 ---
 
-## ✅ WORKFLOW: How to Implement Code
+## WORKFLOW: How to Implement Code
 
 ### Pattern: Add New Feature
 
@@ -193,7 +266,7 @@ clojure_edit(
 clojure_eval(code: """
 (require '[myapp.core :reload])
 (in-ns 'myapp.core)
-(my-new-feature "test1" "test2")   ; Should work ✓
+(my-new-feature "test1" "test2")   ; Should work [PASS]
 """)
 
 ; 5. TEST - Add test case
@@ -210,7 +283,7 @@ clojure_eval(code: "(require '[kaocha.repl :as k]) (k/run-all)")
 
 ---
 
-## 🔧 Tool Selection Guide
+## Tool Selection Guide
 
 ### When Reading Code
 
@@ -244,7 +317,7 @@ clojure_eval(code: "(require '[kaocha.repl :as k]) (k/run-all)")
 
 ---
 
-## 📋 Complete Example: Refactoring Species Queries
+## Complete Example: Refactoring Species Queries
 
 This example shows the CORRECT way to do a refactoring task.
 
@@ -283,7 +356,7 @@ clojure_eval(code: """
   (jdbc/execute! db (sql/format sql-map) {:builder-fn rs/as-unqualified-lower-maps}))
 
 ; Verify the helper works
-(println "Query helper designed and tested")
+(println "[SUCCESS] Query helper designed and tested")
 """)
 
 ; ============================================
@@ -319,7 +392,7 @@ clojure_edit(
 clojure_eval(code: """
 (require '[dm.db.query-helpers :as qh])
 (require '[dm.db.species :as species])
-(println \"✅ Both namespaces loaded successfully\")
+(println "[SUCCESS] Both namespaces loaded successfully")
 """)
 
 ; ============================================
@@ -335,9 +408,9 @@ clojure_eval(code: """
 
 ---
 
-## ❌ ANTI-PATTERNS - DO NOT DO THESE
+## ANTI-PATTERNS - DO NOT DO THESE
 
-### ❌ Anti-pattern 1: Using file_write for Clojure code
+### [ANTI-PATTERN 1] Using file_write for Clojure code
 ```
 file_write(file_path: "src/myapp/core.clj", content: "(defn my-func [x] (* x 2))")
 ```
@@ -346,7 +419,7 @@ file_write(file_path: "src/myapp/core.clj", content: "(defn my-func [x] (* x 2))
 
 ---
 
-### ❌ Anti-pattern 2: Using file_edit for Clojure code
+### [ANTI-PATTERN 2] Using file_edit for Clojure code
 ```
 file_edit(
   file_path: "src/myapp/core.clj",
@@ -358,7 +431,7 @@ file_edit(
 
 ---
 
-### ❌ Anti-pattern 3: Saving without testing
+### [ANTI-PATTERN 3] Saving without testing
 ```
 clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier: "my-func", operation: "replace", content: "(defn my-func [x] ...)")
 ; Immediately move to next task without testing
@@ -368,7 +441,7 @@ clojure_edit(file_path: "src/myapp/core.clj", form_type: "defn", form_identifier
 
 ---
 
-### ❌ Anti-pattern 4: Not reloading before testing saved code
+### [ANTI-PATTERN 4] Not reloading before testing saved code
 ```
 clojure_eval(code: "(my-func 5)")
 ; Testing old version of code!
@@ -378,7 +451,7 @@ clojure_eval(code: "(my-func 5)")
 
 ---
 
-### ❌ Anti-pattern 5: Using wrong form_type
+### [ANTI-PATTERN 5] Using wrong form_type
 ```
 clojure_edit(
   file_path: "src/myapp/core.clj",
@@ -392,7 +465,7 @@ clojure_edit(
 
 ---
 
-### ❌ Anti-pattern 6: Forgetting dispatch value in defmethod
+### [ANTI-PATTERN 6] Forgetting dispatch value in defmethod
 ```
 clojure_edit(
   file_path: "src/myapp/shapes.clj",
@@ -406,7 +479,7 @@ clojure_edit(
 
 ---
 
-### ❌ Anti-pattern 7: Creating files without prototype
+### [ANTI-PATTERN 7] Creating files without prototype
 ```
 clojure_edit(file_path: "src/myapp/new_module.clj", form_type: "ns", form_identifier: "myapp.new-module", operation: "replace", content: "entire complex file")
 ```
@@ -418,14 +491,14 @@ clojure_edit(file_path: "src/myapp/new_module.clj", form_type: "ns", form_identi
 
 ---
 
-## 🎓 Decision Tree: Which Tool to Use
+## Decision Tree: Which Tool to Use
 
 ```
 Is it a Clojure file (.clj, .cljs, .cljc, .bb)?
   ├─ YES: Are you creating/editing a top-level form (defn, def, deftest, ns, etc)?
-  │   ├─ YES: Use clojure_edit ⭐ (with form_type and form_identifier)
+  │   ├─ YES: Use clojure_edit [RECOMMENDED] (with form_type and form_identifier)
   │   └─ NO: Are you changing an expression WITHIN a form?
-  │       ├─ YES: Use clojure_edit_replace_sexp ⭐
+  │       ├─ YES: Use clojure_edit_replace_sexp [RECOMMENDED]
   │       └─ NO: Use clojure_edit for the parent form
   └─ NO: Is it markdown/YAML/JSON/config?
       ├─ YES: Use file_edit or file_write
@@ -439,12 +512,12 @@ Need to read code?
   └─ Need to search? → clojure_grep with regex
 
 Need to test code?
-  └─ Use clojure_eval ⭐ (ALWAYS test before saving)
+  └─ Use clojure_eval [RECOMMENDED] (ALWAYS test before saving)
 ```
 
 ---
 
-## 📝 Checklist Before Using clojure_edit
+## Checklist Before Using clojure_edit
 
 - [ ] Did I test this code in the REPL first?
 - [ ] Did I use the correct `form_type`? (defn, def, deftest, ns, etc)
@@ -456,7 +529,7 @@ Need to test code?
 
 ---
 
-## 🚀 Quick Reference
+## Quick Reference
 
 | Need | Tool | Command |
 |------|------|---------|
@@ -470,7 +543,7 @@ Need to test code?
 
 ---
 
-## ⚠️ Summary: The One Thing to Remember
+## [IMPORTANT] Summary: The One Thing to Remember
 
 **For Clojure code: Use `clojure_edit`. For everything else: Use `file_edit` or `file_write`.**
 
