@@ -24,12 +24,12 @@
   [db ctx]
   (str
    (h/html
-       (base-page
-        [:div
-         [:h1 "dm"]
-         [:ul
-          [:li [:p "system"]]
-          [:li [:p "db"]
-           [:code (pr-str (dm.db/get-db db))]]
-          [:li [:p "ctx"]
-           [:code (pr-str ctx)]]]]))))
+    (base-page
+     [:div
+      [:h1 "dm"]
+      [:ul
+       [:li [:p "system"]]
+       [:li [:p "db"]
+        [:code (pr-str (dm.db/get-db db))]]
+       [:li [:p "ctx"]
+        [:code (pr-str ctx)]]]]))))

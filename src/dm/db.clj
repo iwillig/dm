@@ -1,6 +1,7 @@
 (ns dm.db
   (:import
-   (java.util.concurrent.atomic AtomicLong)))
+   (java.util.concurrent.atomic
+    AtomicLong)))
 
 (set! *warn-on-reflection* true)
 

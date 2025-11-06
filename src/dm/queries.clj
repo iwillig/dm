@@ -1,7 +1,7 @@
 (ns dm.queries
   (:require
-   [hugsql.core :as hugsql]
-   [hugsql.adapter.next-jdbc :as next-adapter]))
+   [hugsql.adapter.next-jdbc :as next-adapter]
+   [hugsql.core :as hugsql]))
 
 ;; Set the adapter to use next.jdbc
 (hugsql/set-adapter! (next-adapter/hugsql-adapter-next-jdbc))

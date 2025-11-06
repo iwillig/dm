@@ -1,9 +1,10 @@
 (ns dm.routes
   (:require
    [dm.html :as dm.html]
+   [liberator.core :as liberator]
    [reitit.core :as r]
-   [reitit.ring :as reitit.ring]
-   [liberator.core :as liberator]))
+   ;; Used in comment block for interactive testing
+   [reitit.ring :as reitit.ring]))
 
 (defn index
   [db]
@@ -20,8 +21,6 @@
 (comment
   (r/match-by-name (router nil) ::index)
   (r/match-by-path (router nil) "/"))
-
-
 
 (defn handler
   [db]

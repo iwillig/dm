@@ -356,20 +356,20 @@
             (t/is (match? pos-int? (:id result))))
 
           (t/testing "Then: we can retrieve it by ID"
-            (let [char (q/get-character-by-id db {:id (:id result)})]
+            (let [character (q/get-character-by-id db {:id (:id result)})]
               (t/is (match? {:name "Conan"
                              :species_code "human"
                              :class_code "fighter"
                              :armor_class 16
                              :level 5}
-                            char))))
+                            character))))
 
           (t/testing "Then: we can retrieve it with details"
-            (let [char (q/get-character-with-details db {:id (:id result)})]
+            (let [character (q/get-character-with-details db {:id (:id result)})]
               (t/is (match? {:name "Conan"
                              :species_name "Human"
                              :class_name "Fighter"}
-                            char))))
+                            character))))
 
           (t/testing "Then: it appears in get-all-characters"
             (let [results (q/get-all-characters db {})]
@@ -388,19 +388,20 @@
                                        :hit_points_max 60
                                        :hit_points_current 45})
               (t/testing "Then: the changes are persisted"
-                (let [char (q/get-character-by-id db {:id (:id result)})]
+                (let [character (q/get-character-by-id db {:id (:id result)})]
+                  ;; Note: SQLite stores booleans as integers (1 for true, 0 for false)
                   (t/is (match? {:name "Conan the Barbarian"
                                  :armor_class 18
                                  :level 6
-                                 :inspiration true}
-                                char))))))
+                                 :inspiration 1}
+                                character))))))
 
           (t/testing "Given: an existing character"
             (t/testing "When: we delete it"
               (q/delete-character! db {:id (:id result)})
               (t/testing "Then: it no longer exists"
-                (let [char (q/get-character-by-id db {:id (:id result)})]
-                  (t/is (nil? char)))))))))))
+                (let [character (q/get-character-by-id db {:id (:id result)})]
+                  (t/is (nil? character)))))))))))
 
 ;; Character attributes tests
 (t/deftest test-character-attributes-crud

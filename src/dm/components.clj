@@ -1,10 +1,10 @@
 (ns dm.components
   (:require
-   [org.httpkit.server :as http-kit]
    [com.stuartsierra.component :as component]
    [dm.db :as dm.db]
    [dm.routes :as dm.routes]
    [next.jdbc :as jdbc]
+   [org.httpkit.server :as http-kit]
    [ragtime.next-jdbc :as ragtime-jdbc]
    [ragtime.repl :as ragtime-repl]))
 

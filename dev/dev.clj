@@ -1,11 +1,12 @@
 (ns dev
   (:require
+   [clj-kondo.core :as clj-kondo]
    [clj-reload.core :as reload]
    ;; [com.stuartsierra.component :as component]
    [com.stuartsierra.component.repl
     :refer [reset set-init start stop system]]
+   ;; Used in REPL and comment block
    [dm.main :as main]
-   [clj-kondo.core :as clj-kondo]
    [kaocha.repl :as k]))
 
 (set-init main/new-system)
@@ -25,7 +26,6 @@
   []
   (-> (clj-kondo/run! {:lint ["src" "test" "dev"]})
       (clj-kondo/print!)))
-
 
 (comment
   (lint)

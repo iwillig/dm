@@ -1,10 +1,10 @@
 (ns dm.main
   (:gen-class)
   (:require
-   [dm.components :as dm.components]
    [bling.core :as bling]
-   [com.stuartsierra.component :as component]
    [cli-matic.core :as cli]
+   [com.stuartsierra.component :as component]
+   [dm.components :as dm.components]
    [dm.roll :as dm.roll]))
 
 (defn new-system
