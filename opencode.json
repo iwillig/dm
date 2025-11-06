@@ -3,10 +3,31 @@
   "theme": "tokyonight",
   "model": "claude-sonnet-4-5",
   "autoupdate": true,
+
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "mistral:latest": {
+          "tools": true
+        }
+      }
+    }
+  },
+  "permission": {
+    "write": "ask",
+    "clojure-mcp_file_write": "ask",
+    "clojure-mcp_file_edit": "ask",
+    "clojure-mcp_clojure_edit": "ask",
+    "clojure-mcp_clojure_edit_replace_sexp": "ask"
+  },
   "agent": {
     "clojure_build": {
       "mode": "primary",
-      "model": "anthropic/claude-sonnet-4-5",
+      "model": "anthropic/claude-haiku-4-5",
       "prompt": "{file:./prompts/clojure_build.md}",
       "tools": {
         "write": false,
@@ -16,6 +37,7 @@
       }
     }
   },
+
   "mcp": {
     "clojure-mcp": {
       "type": "local",
