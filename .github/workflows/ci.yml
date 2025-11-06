@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Install Clojure tools
+        uses: DeLaGuardo/setup-clojure@13.4
+        with:
+          cli: latest              # Clojure CLI
+          bb: latest               # Babashka
+          clj-kondo: latest        # Clj-kondo for linting
+
+      - name: Cache Clojure dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+            ~/.deps.clj
+            .cpcache
+          key: cljdeps-${{ runner.os }}-${{ hashFiles('deps.edn', 'bb.edn') }}
+          restore-keys: |
+            cljdeps-${{ runner.os }}-
+
+      - name: Print tool versions
+        run: |
+          echo "Clojure version:"
+          clojure --version
+          echo "Babashka version:"
+          bb --version
+          echo "Java version:"
+          java -version
+          echo "clj-kondo version:"
+          clj-kondo --version
+
+      - name: Run CI (lint, format check, and tests)
+        run: bb ci
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: junit.xml
+          if-no-files-found: ignore

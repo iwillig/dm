@@ -7,3 +7,15 @@
 /db/
 /dm
 test-lsp-integration.clj
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+
+# Test outputs
+junit.xml
+docs.html
+
+# Act artifacts directory
+.artifacts/

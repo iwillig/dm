@@ -12,7 +12,7 @@
         "write": false,
         "edit": false,
         "read": false,
-        "bash": false
+        "bash": true
       }
     }
   },

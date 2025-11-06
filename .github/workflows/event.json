@@ -1,0 +1,21 @@
+{
+  "act": true,
+  "ref": "refs/heads/main",
+  "repository": {
+    "name": "dm",
+    "owner": {
+      "login": "ivan.willig"
+    }
+  },
+  "pusher": {
+    "name": "local-tester",
+    "email": "test@example.com"
+  },
+  "head_commit": {
+    "message": "Local test commit",
+    "author": {
+      "name": "Local Tester",
+      "email": "test@example.com"
+    }
+  }
+}
