@@ -7,74 +7,36 @@
 (defonce ^:private temp-id
   (AtomicLong. 0))
 
-(defn next-temp-id []
+(defn next-temp-id
+  "Generate a new temporary ID (negative number)"
+  []
   (.decrementAndGet ^AtomicLong temp-id))
 
 (defprotocol IDB
-  (get-db [self])
-  (get-conn [self]))
+  "Protocol for database access"
+  (get-db [self] "Returns the datasource")
+  (get-conn [self] "Returns the datasource (alias for get-db)"))
 
-(def species
-  #{:species/elf
-    :species/tiefling
-    :species/human
-    :species/orc
-    :species/halfing
-    :species/goliath
-    :species/gnome
-    :species/dwarf
-    :species/dragonborn
-    :species/aasimar})
+;; Reference data - these codes match the enum tables in SQL
+(def species-codes
+  #{"elf" "tiefling" "human" "orc" "halfling"
+    "goliath" "gnome" "dwarf" "dragonborn" "aasimar"})
 
-(def classes
-  #{:class/druid
-    :class/barbarian
-    :class/bard
-    :class/cleric
-    :class/fighter
-    :class/monk
-    :class/paladin
-    :class/ranger
-    :class/rouge
-    :class/sorcerer
-    :class/warlock
-    :class/wizard})
+(def class-codes
+  #{"druid" "barbarian" "bard" "cleric" "fighter"
+    "monk" "paladin" "ranger" "rogue" "sorcerer" "warlock" "wizard"})
 
-(def schema
-  {:attribute/name  {:db/valueType :db.type/keyword}
-   :attribute/value {:db/valueType :db.type/long}
+(def attribute-codes
+  #{"strength" "dexterity" "constitution"
+    "intelligence" "wisdom" "charisma"})
 
-   :item/name   {:db/valueType :db.type/keyword}
-   :item/number {:db/valueType :db.type/long}
+(def skill-codes
+  #{"athletics" "acrobatics" "sleight-of-hand" "stealth"
+    "arcana" "history" "investigation" "nature" "religion"
+    "animal-handling" "insight" "medicine" "perception" "survival"
+    "deception" "intimidation" "performance" "persuasion"})
 
-   :character/name        {:db/valueType :db.type/string}
-   :character/armor-class {:db/valueType :db.type/long}
-   :character/inspriation {:db/valueType :db.type/boolean}
-
-   :character/skill {:db/valueType   :db.type/ref
-                     :db/cardinality :db.cardinality/many}
-
-   :character/class   {:db/valueType :db.type/ref}
-   :character/species {:db/valueType :db.type/ref}
-
-   :character/attributes {:db/valueType   :db.type/ref
-                          :db/cardinality :db.cardinality/many}})
-
-(comment
-
-  {:character/name       "Varis"
-   :character/species     :species/elf
-   :character/class       :class/druid
-   :character/armor-class 4
-   :character/attributes #{{:attribute/name  :attribute.name/strength
-                            :attribute/value 10}
-                           {:attribute/name  :attribute.name/wisdom
-                            :attribute/value 8}
-                           {:attribute/name  :attribute.name/charisma
-                            :attribute/value 7}
-                           {:attribute/name  :attribute.name/intelligence
-                            :attribute/value 9}
-                           {:attribute/name  :attribute.name/constitution
-                            :attribute/value 3}
-                           {:attribute/name  :attribute.name/dexterity
-                            :attribute/value 3}}})
+;; Database configuration for SQLite
+(def db-config
+  {:dbtype "sqlite"
+   :dbname "dm.db"})

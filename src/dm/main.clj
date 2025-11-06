@@ -11,12 +11,17 @@
   [_]
   (component/system-map
    :database
-   (dm.components/map->Database {:db-path "db"})
+   (dm.components/map->Database {:db-path "dm.db"})
+
+   :migrations
+   (component/using
+    (dm.components/map->Ragtime {:migration-dir "migrations"})
+    {:database :database})
+
    :http-server
    (component/using
     (dm.components/map->HTTPKit {:port 7001 :timeout 100})
     {:database :database})))
-
 
 (defn callout
   [messages]
@@ -29,9 +34,9 @@
      (apply bling/print-bling messages))))
 
 (def config-cli
-  {:command     "dm-assistant"
+  {:command "dm-assistant"
    :description ""
-   :version     "0.0.1"
+   :version "0.0.1"
    :subcommands [{:command "roll"
                   :description "Rolls a N dice"
                   :runs (fn [{[dn] :_arguments}]

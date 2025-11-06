@@ -6,3 +6,4 @@
 /target/
 /db/
 /dm
+test-lsp-integration.clj
