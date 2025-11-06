@@ -29,7 +29,7 @@
   "agent": {
     "clojure_build": {
       "mode": "primary",
-      "model": "anthropic/claude-haiku-4-5",
+      "model": "anthropic/claude-sonnet-4-5",
       "prompt": "{file:./prompts/clojure_build.md}",
       "tools": {
         "write": false,

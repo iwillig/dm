@@ -6,10 +6,14 @@
    [com.stuartsierra.component.repl
     :refer [reset set-init start stop system]]
    ;; Used in REPL and comment block
+   [dm.log :as log]
    [dm.main :as main]
    [kaocha.repl :as k]))
 
 (set-init main/new-system)
+
+;; Initialize logging on REPL startup
+(log/init!)
 
 (reload/init
  {:dirs ["src" "dev" "test"]})

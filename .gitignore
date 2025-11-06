@@ -19,3 +19,6 @@ docs.html
 
 # Act artifacts directory
 .artifacts/
+
+# Log files
+logs/

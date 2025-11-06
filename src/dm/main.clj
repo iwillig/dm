@@ -5,6 +5,7 @@
    [cli-matic.core :as cli]
    [com.stuartsierra.component :as component]
    [dm.components :as dm.components]
+   [dm.log :as log]
    [dm.roll :as dm.roll]))
 
 (defn new-system
@@ -53,4 +54,7 @@
   (component/start (new-system nil)))
 
 (defn -main [& args]
+  ;; Initialize structured logging
+  (log/init!)
+  (log/info {:args (vec args)} "DM Assistant starting")
   (cli/run-cmd args config-cli))

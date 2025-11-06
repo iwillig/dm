@@ -2,6 +2,7 @@
   (:require
    [com.stuartsierra.component :as component]
    [dm.db :as dm.db]
+   [dm.log :as log]
    [dm.routes :as dm.routes]
    [next.jdbc :as jdbc]
    [org.httpkit.server :as http-kit]
@@ -17,28 +18,36 @@
   component/Lifecycle
   (start [self]
     (if (:datasource self)
-      self
+      (do
+        (log/debug {:component "Database"} "Already started, skipping")
+        self)
       (let [db-spec (assoc dm.db/db-config :dbname db-path)
             datasource (jdbc/get-datasource db-spec)]
-        (println "Starting Database component with:" db-spec)
+        (log/component-started "Database" {:db-path db-path
+                                           :db-spec (dissoc db-spec :password)})
         (assoc self :datasource datasource))))
   (stop [self]
     (when-let [datasource (:datasource self)]
+      (log/component-stop "Database")
       (when (instance? java.io.Closeable datasource)
-        (.close ^java.io.Closeable datasource)))
+        (.close ^java.io.Closeable datasource))
+      (log/component-stopped "Database"))
     (dissoc self :datasource)))
 
 (defrecord Ragtime [migration-dir database]
   component/Lifecycle
   (start [self]
     (if (:migrated? self)
-      self
+      (do
+        (log/debug {:component "Ragtime"} "Already migrated, skipping")
+        self)
       (let [datasource (dm.db/get-conn database)
+            dir (or migration-dir "migrations")
             config {:datastore (ragtime-jdbc/sql-database datasource)
-                    :migrations (ragtime-jdbc/load-resources
-                                 (or migration-dir "migrations"))}]
-        (println "Running migrations from:" (or migration-dir "migrations"))
+                    :migrations (ragtime-jdbc/load-resources dir)}]
+        (log/migration-start dir)
         (ragtime-repl/migrate config)
+        (log/migration-complete dir (count (:migrations config)))
         (assoc self :migrated? true :config config))))
   (stop [self]
     self))
@@ -47,14 +56,17 @@
   component/Lifecycle
   (start [self]
     (if (:server self)
-      self
+      (do
+        (log/debug {:component "HTTPKit"} "Already started, skipping")
+        self)
       (let [server (http-kit/run-server
                     (dm.routes/handler database)
                     {:port port})]
-        (println "Starting HTTP server on port:" port)
+        (log/component-started "HTTPKit" {:port port :timeout timeout})
         (assoc self :server server))))
   (stop [self]
     (when-let [server (:server self)]
-      (println "Stopping HTTP server")
-      (server :timeout timeout))
+      (log/component-stop "HTTPKit")
+      (server :timeout timeout)
+      (log/component-stopped "HTTPKit"))
     (dissoc self :server)))
