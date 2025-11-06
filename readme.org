@@ -13,7 +13,7 @@ brew install dm-assistant
 
 #+BEGIN_SRC bash
 
-bb ci ## Run all of the lints, and tests
+bb ci ## Run all the lints, and tests
 
 bb build-cli ## Builds a new dm binary
 

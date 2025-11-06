@@ -1,0 +1,3 @@
+{:write-file-guard    :full-read
+ :cljfmt              false
+ :bash-over-nrepl     false}
