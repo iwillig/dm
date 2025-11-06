@@ -1,17 +1,6 @@
-(ns dm.db
-  (:import
-   (java.util.concurrent.atomic
-    AtomicLong)))
+(ns dm.db)
 
 (set! *warn-on-reflection* true)
-
-(defonce ^:private temp-id
-  (AtomicLong. 0))
-
-(defn next-temp-id
-  "Generate a new temporary ID (negative number)"
-  []
-  (.decrementAndGet ^AtomicLong temp-id))
 
 (defprotocol IDB
   "Protocol for database access"

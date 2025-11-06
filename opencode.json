@@ -17,6 +17,7 @@
       }
     }
   },
+
   "permission": {
     "write": "ask",
     "clojure-mcp_file_write": "ask",
@@ -24,6 +25,7 @@
     "clojure-mcp_clojure_edit": "ask",
     "clojure-mcp_clojure_edit_replace_sexp": "ask"
   },
+
   "agent": {
     "clojure_build": {
       "mode": "primary",
