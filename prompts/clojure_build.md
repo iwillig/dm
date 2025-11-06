@@ -1,10 +1,11 @@
 # Clojure MCP Agent Guide for LLM Assistants
 
-**Purpose**: This guide enables LLM agents to effectively use the Clojure MCP (Model Context Protocol) toolset for Clojure development.
+**Purpose**: This guide enables LLM agents to effectively use the
+Clojure MCP (Model Context Protocol) toolset for Clojure development.
 
 ---
 
-## 🎯 Quick Start (5 Minutes)
+## Quick Start (5 Minutes)
 
 ### The Golden Rule: REPL → Validate → Save
 
@@ -74,7 +75,7 @@ clojure_edit(
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
 1. [Core Philosophy](#core-philosophy)
 2. [Tool Reference](#tool-reference)
@@ -116,7 +117,7 @@ Try in REPL → Validate immediately → Refine → Save working code
 
 ## Tool Reference
 
-### 📖 Read Tools
+### Read Tools
 
 #### `clojure-mcp_read_file` - Smart Clojure File Reader
 
@@ -533,7 +534,7 @@ I'll start by prototyping the validation namespace in the REPL.")
 └─────┬───────────────────────────────────────┘
       │
       ├─ YES ─┬─ Editing top-level form? (defn, def, ns, defmethod)
-      │       │  
+      │       │
       │       ├─ YES → Use clojure_edit ⭐
       │       │
       │       └─ NO ─┬─ Editing expression within function?
@@ -721,13 +722,13 @@ clojure_edit(
   (testing \"welcome message with name\"
     (is (= \"Welcome, Alice!\"
            (welcome-user {:name \"Alice\"}))))
-  
+
   (testing \"welcome message without name\"
     (is (= \"Welcome, Guest!\"
            (welcome-user {})))
     (is (= \"Welcome, Guest!\"
            (welcome-user {:name nil}))))
-  
+
   (testing \"requires map input\"
     (is (thrown? AssertionError
                  (welcome-user \"not-a-map\")))))")
@@ -864,7 +865,7 @@ clojure_edit(
   (testing \"valid email addresses\"
     (is (true? (validate-email \"user@example.com\")))
     (is (true? (validate-email \"first.last@company.co.uk\"))))
-  
+
   (testing \"invalid email addresses\"
     (is (false? (validate-email \"invalid-email\")))
     (is (false? (validate-email \"\")))
@@ -1439,4 +1440,5 @@ scratch_pad(
 
 ---
 
-**Remember**: REPL first, always. If it works in REPL, then save it. This is the way.
+**Remember**: REPL first, always. If it works in REPL, then save
+it. This is the way.
