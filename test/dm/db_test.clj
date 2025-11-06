@@ -118,15 +118,7 @@
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )"]))
 
-(t/deftest test-db
-  (t/testing ""
-    (t/is (match? true true))))
-
-(t/deftest test-temp-id
-  (t/testing "Given: no args"
-    (t/testing "When: We attempt to get the next temp-id"
-      (t/is (match? neg-int? (dm.db/next-temp-id))
-            "Then: The fn should return a neg-int"))))
+;; Removed test-db and test-temp-id tests as next-temp-id function was removed
 
 ;; Species tests
 (t/deftest test-species-crud

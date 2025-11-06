@@ -19,9 +19,8 @@
 
   juji/editscript {:mvn/version "0.6.6"}
   metosin/reitit {:mvn/version "0.9.2"}
-  ataraxy/ataraxy {:mvn/version "0.4.3"}
   liberator/liberator {:mvn/version "0.15.3"}
-  
+
   ;; Structured logging with Cambium
   ;; Note: Logback includes slf4j-api 1.7.x, which is compatible
   cambium/cambium.core {:mvn/version "1.1.1"}
